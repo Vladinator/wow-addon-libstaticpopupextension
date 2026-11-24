@@ -107,6 +107,10 @@ The frame has the same accessors as the game's dialog frames, so code that works
 
 The frames are reused after they are closed, so don't keep hold of one longer than the dialog is visible.
 
+# Combat
+
+The game doesn't let addons change how a frame handles the keyboard during combat. So in combat `hideOnEscape` and `enterClicksFirstButton` do nothing, and the dialogs don't read the keyboard at all, whether they were shown before or during combat. They start reading it again when combat ends. Clicking the buttons always works.
+
 # Stacking
 
 The dialogs of the library always go below the popups of the game that are shown. The library hooks the functions of the game that show and hide popups (`StaticPopup_SetUpPosition`, `StaticPopup_OnHide`, `StaticPopupSpecial_Show` and `StaticPopupSpecial_Hide`) and moves your dialogs one frame later, so it never runs inside the game's own code. The game leaves a gap when one of its popups closes, so your dialogs are placed below the lowest popup of the game that is shown, wherever that is. The dialogs of the library stack below each other the same way.
