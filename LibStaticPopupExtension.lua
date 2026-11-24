@@ -63,7 +63,7 @@ local WIDE_TEXT_WIDTH = 360
 local TOP_PADDING = 16
 local BOTTOM_PADDING = 16
 local SIDE_MARGIN = 16
-local EDIT_BOX_MARGIN = 55
+local EDIT_BOX_MARGIN = 41
 local TEXT_TO_EDIT_BOX = 8
 local TEXT_TO_BUTTONS = 9
 local EDIT_BOX_TO_BUTTONS = 12
@@ -202,10 +202,14 @@ local function FindLastBlizzardDialog()
         return
     end
     local last ---@type LibStaticPopupExtension-1.0_BlizzardDialog?
+    local lastBottom ---@type number?
     forEachShownDialog(function(dialog)
         ---@cast dialog LibStaticPopupExtension-1.0_BlizzardDialog
         if dialog:IsShown() and not dialog.hasFixedPosition then
-            last = dialog
+            local bottom = dialog:GetBottom()
+            if not last or not bottom or not lastBottom or bottom <= lastBottom then
+                last, lastBottom = dialog, bottom
+            end
         end
     end)
     return last
@@ -298,16 +302,22 @@ function Lib.RequestRestack()
 end
 
 local function InstallHooks()
-    if Lib._hooked or type(_G["StaticPopup_SetUpPosition"]) ~= "function" then
+    if Lib._hooked then
         return
     end
     Lib._hooked = true
     local function restack()
         Lib.RequestRestack()
     end
-    hooksecurefunc("StaticPopup_SetUpPosition", restack)
-    if type(_G["StaticPopup_OnHide"]) == "function" then
-        hooksecurefunc("StaticPopup_OnHide", restack)
+    for _, name in ipairs({
+        "StaticPopup_SetUpPosition",
+        "StaticPopup_OnHide",
+        "StaticPopupSpecial_Show",
+        "StaticPopupSpecial_Hide",
+    }) do
+        if type(_G[name]) == "function" then
+            hooksecurefunc(name, restack)
+        end
     end
 end
 
