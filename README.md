@@ -70,7 +70,8 @@ All of the fields are optional, apart from `which` and `text`. Any other field o
 | `hasEditBox` | Shows an edit box. It gets the focus and its text is selected when the dialog is shown. |
 | `editBoxWidth` | The width of the edit box, 130 by default. Over 260 the dialog grows by the difference, like the game's, so `350` is the usual wide edit box. |
 | `maxLetters`, `countInvisibleLetters` | Limit the text of the edit box, `0` removes the limit. |
-| `hideOnEscape` | Escape closes the dialog and calls `OnCancel` with `"clicked"`. |
+| `hideOnEscape` | Escape closes the dialog and calls `OnCancel` with `"clicked"`. Like the game, one press closes every dialog of the library that has this set, the newest first. |
+| `noCancelOnEscape` | Escape closes the dialog without calling `OnCancel`. |
 | `enterClicksFirstButton` | Enter clicks the first button that can be clicked. |
 | `wideText` | A wider text (360, normally 290) for long texts. |
 | `timeout` | Seconds until the dialog cancels itself with `"timeout"`, `0` or `nil` for never. |
@@ -89,7 +90,7 @@ The handlers are called with the dialog frame and the same arguments as the game
 | `OnAccept(frame, data, data2)` | `button1` is clicked. Return `true` to keep the dialog open. |
 | `OnCancel(frame, data, reason)` | `button2` is clicked, Escape is pressed, the dialog times out or it is shown again. The reason is `"clicked"`, `"timeout"` or `"override"`. Return `true` to keep the dialog open when a button was clicked. |
 | `EditBoxOnEnterPressed(editBox, data)` | Enter is pressed in the edit box. Nothing else happens on Enter unless you set `enterClicksFirstButton`. |
-| `EditBoxOnEscapePressed(editBox, data)` | Escape is pressed in the edit box. Without a handler it closes the dialog if `hideOnEscape` is set. |
+| `EditBoxOnEscapePressed(editBox, data)` | Escape is pressed in the edit box. Nothing else happens on Escape, so close the dialog from the handler if you want it to. |
 | `EditBoxOnTextChanged(editBox, data)` | The text of the edit box changed. |
 
 # The frame
