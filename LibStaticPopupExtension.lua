@@ -20,7 +20,8 @@ assert(LibStub, MAJOR .. " requires LibStub")
 ---@field public hideOnEscape? boolean
 ---@field public wideText? boolean
 ---@field public enterClicksFirstButton? boolean
----@field public sound? number|string
+---@field public sound? number|string @Played when shown, a sound kit id or a file. The game's popup sound by default.
+---@field public hideSound? number|string @Played when hidden, a sound kit id or a file. The game's popup close sound by default.
 ---@field public noCloseOnAccept? boolean
 ---@field public noCancelOnReuse? boolean
 ---@field public timeout? number Seconds until the dialog cancels itself, `0` or `nil` for never.
@@ -125,6 +126,17 @@ local function ResolveText(info, arg1, arg2)
         return formatted
     end
     return text
+end
+
+---@param sound? number|string
+local function PlayDialogSound(sound)
+    if type(sound) == "number" then
+        if not PlaySound(sound) then
+            PlaySoundFile(sound)
+        end
+    elseif type(sound) == "string" then
+        PlaySoundFile(sound)
+    end
 end
 
 ---@param frame LibStaticPopupExtension-1.0_Frame
@@ -374,6 +386,7 @@ function Lib.OnHide(frame)
     end
     Reposition()
     local info = frame.dialogInfo
+    PlayDialogSound(info.hideSound or SOUNDKIT.IG_MAINMENU_CLOSE)
     if info.OnHide then
         info.OnHide(frame, frame.data)
     end
@@ -629,14 +642,7 @@ function Lib.Show(dialog, text_arg1, text_arg2, data)
     frame:Show()
     frame:Raise()
 
-    local sound = info.sound or SOUNDKIT.IG_MAINMENU_OPEN
-    if type(sound) == "number" then
-        if not PlaySound(sound) then
-            PlaySoundFile(sound)
-        end
-    elseif type(sound) == "string" then
-        PlaySoundFile(sound)
-    end
+    PlayDialogSound(info.sound or SOUNDKIT.IG_MAINMENU_OPEN)
 
     if info.OnShow then
         info.OnShow(frame, data)
