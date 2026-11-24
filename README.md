@@ -60,7 +60,7 @@ Anything you want to be given back to your handlers, it is stored in `frame.data
 
 # dialog
 
-All of the fields are optional, apart from `which` and `text`.
+All of the fields are optional, apart from `which` and `text`. Any other field of the game's dialogs isn't supported and is ignored.
 
 | Field | |
 |---|---|
@@ -68,16 +68,14 @@ All of the fields are optional, apart from `which` and `text`.
 | `text` | A string, or a function that returns one. It can have `%s` for the arguments. |
 | `button1`, `button2` | The text of the buttons. A button without text is hidden. |
 | `hasEditBox` | Shows an edit box. It gets the focus and its text is selected when the dialog is shown. |
-| `hasWideEditBox` | Accepted so a dialog written for the game works as is, `editBoxWidth` sets the width. |
-| `editBoxWidth` | The width of the edit box, 130 by default. The dialog grows to fit it. |
+| `editBoxWidth` | The width of the edit box, 130 by default. Over 260 the dialog grows by the difference, like the game's, so `350` is the usual wide edit box. |
 | `maxLetters`, `countInvisibleLetters` | Limit the text of the edit box, `0` removes the limit. |
 | `hideOnEscape` | Escape closes the dialog and calls `OnCancel` with `"clicked"`. |
 | `enterClicksFirstButton` | Enter clicks the first button that can be clicked. |
 | `wideText` | A wider text (360, normally 290) for long texts. |
 | `timeout` | Seconds until the dialog cancels itself with `"timeout"`, `0` or `nil` for never. |
-| `sound` | A sound kit id or a file to play when the dialog is shown. By default the same sound as the game. |
-| `hideSound` | Like `sound`, but played when the dialog is hidden, by default the same sound as the game. |
-| `noCloseOnAccept` | Keeps the dialog open after `button1` is clicked. |
+| `sound` | A sound kit id played when the dialog is shown, on top of the sound the game always plays. |
+| `hideSound` | A sound kit id played when `button1` is clicked with Enter (`enterClicksFirstButton`), on top of the sound the game always plays when closing. |
 | `noCancelOnReuse` | See [above](#showing-a-dialog). |
 
 ## handlers
@@ -112,10 +110,6 @@ The frames are reused after they are closed, so don't keep hold of one longer th
 
 The dialogs of the library always go below the popups of the game that are shown. The library hooks the functions of the game that show and hide popups (`StaticPopup_SetUpPosition`, `StaticPopup_OnHide`, `StaticPopupSpecial_Show` and `StaticPopupSpecial_Hide`) and moves your dialogs one frame later, so it never runs inside the game's own code. The game leaves a gap when one of its popups closes, so your dialogs are placed below the lowest popup of the game that is shown, wherever that is. The dialogs of the library stack below each other the same way.
 
-# What isn't supported
-
-The dialog is a lot smaller than the game's. These don't exist: `button3` and `button4`, the extra button, the close button, the alert icon, sub text, the item, money and progress bar elements, inserted frames, `whileDead`, `exclusive`, `cancels`, `preferredIndex` and the focus of a gamepad. A field that isn't supported is ignored.
-
 # Typing
 
-`meta.lua` has the annotations that the [Lua language server](https://luals.github.io/) needs to know the types of the game that the library uses, it isn't loaded by anything. The library types itself: `LibStaticPopupExtension-1.0_Dialog` is the dialog and `LibStaticPopupExtension-1.0_Frame` is the frame.
+The library types itself: `LibStaticPopupExtension-1.0_Dialog` is the dialog and `LibStaticPopupExtension-1.0_Frame` is the frame.
