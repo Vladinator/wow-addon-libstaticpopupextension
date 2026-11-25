@@ -109,7 +109,9 @@ The frames are reused after they are closed, so don't keep hold of one longer th
 
 # Combat
 
-The game doesn't let addons change how a frame handles the keyboard during combat. So in combat `hideOnEscape` and `enterClicksFirstButton` do nothing, and the dialogs don't read the keyboard at all, whether they were shown before or during combat. They start reading it again when combat ends. Clicking the buttons always works.
+`hideOnEscape` works in combat. The library lists one small frame in `UISpecialFrames` while a dialog with it is visible, and the game closes the frames of that list on Escape, in combat too.
+
+The game doesn't let addons change how a frame handles the keyboard during combat, so `enterClicksFirstButton` does nothing in combat. Only the dialogs that have it read the keyboard at all, and they stop when combat starts and start again when it ends, whether they were shown before or during combat. Clicking the buttons always works.
 
 # Stacking
 
